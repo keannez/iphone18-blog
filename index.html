@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iPhone 18 Series Blog | Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>iPhone 18 Series Blog</h1>
+    <p>Tech Updates & Community Discussion | Created by Keanne Kaide D. Roa (2nd Year ACT)</p>
+  </header>
+
+  <nav>
+    <a href="index.html" class="active">Home & Forum</a>
+    <a href="lineup.html">iPhone 18 Lineup</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- Featured Blog Post -->
+    <div class="card">
+      <span class="badge">Featured Post</span>
+      <h2>Welcome to the iPhone 18 Series Community Blog!</h2>
+      <p>
+        Apple's iPhone 18 lineup brings major upgrades including the next-gen A20 chip, improved under-display Face ID sensors, and enhanced Apple Intelligence features. Feel free to read the live tech headlines below or drop your own post and comments in the discussion board!
+      </p>
+    </div>
+
+    <!-- Public API Section (Hacker News API) -->
+    <div class="card">
+      <h2>Live Tech & iPhone 18 Discussions (Public API)</h2>
+      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">
+        Fetched live using the Hacker News Algolia Public API — Prepared by <strong>Keanne Kaide D. Roa (2nd Year ACT)</strong>
+      </p>
+      <div id="api-news">Loading latest iPhone 18 articles...</div>
+    </div>
+
+    <!-- Public Post & Comment Section (Utterances) -->
+    <div class="card">
+      <h2>Community Posts & Comments</h2>
+      <p style="font-size: 14px; margin-bottom: 15px;">
+        Sign in with GitHub below to post your thoughts about the iPhone 18 series or reply to other visitors!
+      </p>
+
+      <!-- Utterances Widget -->
+      <script src="https://utteranc.es/client.js"
+              repo="keannez/iphone18-blog"
+              issue-term="pathname"
+              label="iphone-18-blog"
+              theme="github-light"
+              crossorigin="anonymous"
+              async>
+      </script>
+    </div>
+
+  </div>
+
+  <footer>
+    &copy; 2026 iPhone 18 Series Blog | Keanne Kaide D. Roa - 2nd Year ACT
+  </footer>
+
+  <script>
+    // Public API Integration: Hacker News Search API
+    async function fetchTechNews() {
+      const container = document.getElementById("api-news");
+      try {
+        const response = await fetch("https://hn.algolia.com/api/v1/search?query=iPhone%2018&tags=story&hitsPerPage=5");
+        const data = await response.json();
+
+        if (data.hits.length === 0) {
+          container.innerHTML = "<p>No recent stories found.</p>";
+          return;
+        }
+
+        container.innerHTML = "";
+        data.hits.forEach(item => {
+          const url = item.url || `https://news.ycombinator.com/item?id=${item.objectID}`;
+          const div = document.createElement("div");
+          div.className = "news-item";
+          div.innerHTML = `
+            <a href="${url}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+            <div class="news-meta">Posted by ${item.author} | Points: ${item.points} | Comments: ${item.num_comments}</div>
+          `;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        container.innerHTML = "<p>Unable to load live news right now.</p>";
+      }
+    }
+
+    fetchTechNews();
+  </script>
+
+</body>
+</html>
